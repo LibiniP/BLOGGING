@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blogs | My Tech Blog</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Times New Roman";
+      background: mistyrose;
+    }
+
+    header {
+      background: lavender;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      color: midnightblue;
+      font-size: 25px;
+    }
+
+    nav a {
+      color: mediumslateblue;
+      margin-left: 20px;
+      text-decoration: none;
+      font-size: 18px;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: lightseagreen;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 25px;
+      background: honeydew;
+      border-radius: 12px;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      color: darkslateblue;
+    }
+
+    form {
+      margin-bottom: 20px;
+    }
+
+    form input,
+    form textarea,
+    form button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    form textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    form button {
+      background: mediumslateblue;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    form button:hover {
+      background: lightseagreen;
+    }
+
+    .blog-post {
+      background: lavenderblush;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid mediumorchid;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .blog-post:hover {
+      background: lightcyan;
+      transform: translateY(-4px);
+    }
+
+    .blog-post h3 {
+      margin-bottom: 8px;
+      color: midnightblue;
+    }
+
+    .blog-post p {
+      margin-bottom: 10px;
+    }
+
+    .actions button {
+      margin-right: 10px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .actions .edit {
+      background: lightseagreen;
+      color: white;
+    }
+
+    .actions .edit:hover {
+      background: seagreen;
+    }
+
+    .actions .delete {
+      background: lightcoral;
+      color: white;
+    }
+
+    .actions .delete:hover {
+      background: crimson;
+    }
+
+    footer {
+      background: lightsteelblue;
+      color: white;
+      padding: 25px;
+      text-align: center;
+      margin-top: 80px;
+    }
+
+    footer a {
+      color: mediumvioletred;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    footer a:hover {
+      color: darkslateblue;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>My Mini Blog</h1>
+    <nav>
+      <a href="home.html">Home</a>
+      <a href="blog.html">Blogs</a>
+      <a href="login.html">Logout</a>
+    </nav>
+  </header>
+
+   <div class="container">
+    <h2>Create a New Blog Post</h2>
+    <form id="createForm" action="/create-post" method="POST">
+      <input type="hidden" name="user_id" id="user_id">
+      <input type="text" name="title" placeholder="Blog Title" required>
+      <textarea name="content" placeholder="Write your blog here..." required></textarea>
+      <button type="submit">Publish</button>
+    </form>
+
+    <h2>Existing Blogs</h2>
+    <div id="posts"></div> 
+  </div>
+
+
+  <footer>
+    <p>📧 Contact: <a href="mailto:mytechblog@example.com">mytechblog@example.com</a></p>
+    <p>🌐 Follow us: 
+      <a href="#">LinkedIn</a> | 
+      <a href="#">GitHub</a> | 
+      <a href="#">Twitter</a>
+    </p>
+    <p>&copy; 2025 My Tech Blog. All Rights Reserved.</p>
+  </footer>
+    <script>
+  const params = new URLSearchParams(window.location.search);
+  const user_id = params.get("user");
+
+  if (user_id) {
+    // Update Blog link in navbar with ?user=ID
+    const blogLink = document.querySelector('nav a[href="blog.html"]');
+    if (blogLink) {
+      blogLink.href = "blog.html?user=" + user_id;
+    }
+
+    // Update Home link too (if you need it)
+    const homeLink = document.querySelector('nav a[href="home.html"]');
+    if (homeLink) {
+      homeLink.href = "home.html?user=" + user_id;
+    }
+  }
+
+    const form = document.getElementById("createForm");
+    const postsDiv = document.getElementById("posts");
+
+    form.onsubmit = (e) => {
+      e.preventDefault();
+      const formData = new URLSearchParams(new FormData(form)).toString();
+      fetch("/create-post", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData
+      })
+      .then(res => res.text())
+      .then(txt => {
+        console.log("Server response:", txt);
+        form.reset();
+        document.getElementById("user_id").value = user_id; // ✅ keep user_id after reset
+        loadPosts();
+      })
+      .catch(err => console.error("Fetch error:", err));
+    };
+
+    // 🔹 Load posts
+    function loadPosts() {
+      fetch("/get-posts?user=" + user_id)
+        .then(res => res.json())
+        .then(posts => {
+          postsDiv.innerHTML = "";
+          posts.forEach(post => {
+            const div = document.createElement("div");
+            div.className = "blog-post";
+            div.innerHTML = `
+              <h3>${post.title}</h3>
+              <p>${post.content}</p>
+              <div class="actions">
+                <button class="edit">Edit</button>
+                <button class="delete">Delete</button>
+              </div>
+            `;
+
+            // 🔹 Edit
+            div.querySelector(".edit").onclick = () => {
+              const title = prompt("Edit title:", post.title);
+              const content = prompt("Edit content:", post.content);
+              if (title && content) {
+                fetch("/edit-post", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                  body: `id=${post.id}&title=${encodeURIComponent(title)}&content=${encodeURIComponent(content)}`
+                }).then(() => loadPosts());
+              }
+            };
+
+            // 🔹 Delete
+            div.querySelector(".delete").onclick = () => {
+              if (confirm("Delete this post?")) {
+                fetch("/delete-post", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                  body: `id=${post.id}`
+                }).then(() => loadPosts());
+              }
+            };
+
+            postsDiv.appendChild(div);
+          });
+        });
+    }
+
+    loadPosts(); // load on page start
+  </script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Home | My Mini Blog</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Times New Roman";
+      color: black;
+      line-height: 1.5;
+      background:mistyrose;
+    }
+
+    header {
+      background: lavender;  
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      color: midnightblue;
+      font-size: 25px;
+    }
+
+    nav a {
+      color: mediumslateblue;
+      margin-left: 20px;
+      text-decoration: none;
+      font-size: 18px;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover { color: lightseagreen; }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 25px;
+      background: honeydew;
+      border-radius: 12px;
+      transition: transform 0.3s ease;
+    }
+
+    .container:hover {
+      transform: translateY(-4px);
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      color:darkslateblue;
+    }
+
+    p {
+      margin-bottom: 15px;
+    }
+
+    .quote-box {
+      background: lavenderblush;
+      border-left: 4px solid mediumorchid;
+      padding: 15px;
+      margin: 20px ;
+      border-radius: 8px;
+      font-style: italic;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .quote-box:hover {
+      background: lightcyan;
+      transform: translateX(5px);
+    }
+
+    footer {
+      background: lightsteelblue;
+      color: white;
+      padding: 25px;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    footer a {
+      color: mediumvioletred;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    footer a:hover {
+      color: darkslateblue;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>My Mini Blog</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blogs</a>
+      <a href="login.html">Logout</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2>Welcome to My Mini Blog</h2>
+    <p>
+      A <strong>blog</strong> is an online journal or informational website 
+      where writers share their thoughts, knowledge, and updates on specific topics. 
+      Blogs can cover technology, lifestyle, travel, or any area of interest. 
+      They are a powerful way to express ideas and connect with readers worldwide.
+    </p>
+
+    <h2>Why Blogging?</h2>
+    <p>
+      Blogging helps professionals build credibility, share insights, and contribute 
+      to the online community. In tech, blogs are often used to explain new frameworks, 
+      document projects, or teach programming concepts.
+    </p>
+
+    <div class="quote-box">"Blogging is to writing what extreme sports are to athletics — more free-form, more accident-prone, less formal, and more alive." – Andrew Sullivan</div>
+    <div class="quote-box">"The best way to learn is to teach — and blogging is teaching in public." – Anonymous</div>
+    <div class="quote-box">"Your blog is your unedited version of yourself." – Lorelle VanFossen</div>
+  </div>
+
+  <footer>
+    <p>📧 Contact: <a href="mailto:mytechblog@example.com">mytechblog@example.com</a></p>
+    <p>🌐 Follow us: 
+      <a href="#">LinkedIn</a> | 
+      <a href="#">GitHub</a> | 
+      <a href="#">Twitter</a>
+    </p>
+    <p>&copy; 2025 My Tech Blog. All Rights Reserved.</p>
+  </footer>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const user_id = params.get("user");
+
+  if (user_id) {
+    // Update Blog link in navbar with ?user=ID
+    const blogLink = document.querySelector('nav a[href="blog.html"]');
+    if (blogLink) {
+      blogLink.href = "blog.html?user=" + user_id;
+    }
+
+    // Update Home link too (if you need it)
+    const homeLink = document.querySelector('nav a[href="home.html"]');
+    if (homeLink) {
+      homeLink.href = "home.html?user=" + user_id;
+    }
+  }
+</script>
+
+
+</body>
+</html>
